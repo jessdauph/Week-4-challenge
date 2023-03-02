@@ -4,34 +4,36 @@ var questionsContainerEl = document.getElementById('options');
 var questionTitle = document.getElementById ('Question-title')
 var questionElement = document.getElementById('question')
 var answerButtonsElement = document.getElementById('answer-buttons')
+var countdownEl = document.getElementById('countdown')
+var timeBoxEl = document.getElementById ('timeBox')
+var timeLeft = 5;
+var buttonContainer= document.getElementById("button-container")
 
 function countdown () {
-    var timeLeft = 5;
-    var timeInterval = setInterval
-     {
-    timeLeft--;
-    timerInterval.textContent = `${timeLeft} second(s)`;
+    
+    var timerInterval= setInterval(timer, 1000)
+     function timer() { 
+    // timeLeft--;
+    timeLeft= timeLeft -1;
+    // console.log (timeLeft)
+    countdownEl.textContent = `${timeLeft} second(s)`;
     if(timeLeft === 0) {
-        clearInterval(timeInterval);
-        timerInterval.textContent = "";
-        displayMessage();
+        clearInterval(timerInterval);
+        timeBoxEl.innerHTML = "Time's up!";
+        
          }
-    } 1000;
+    } 
 }
 var score = 0;
 
-let shuffledQuestions;
+// let shuffledQuestions;
 var currentQuestionIndex=0;
 
 var questions = [
     {
         question: 'What color was Marilyn Monroes natural hair color?',
-        answers: [
-            { text: 'red ()', correct: true},
-            { text: 'brown ()', correct: false},
-            { text: 'blonde ()', correct: false},
-            { text: 'black ()', correct: false},
-        ]
+        answers: ['red', 'brown', 'blonde', 'black' ],
+        correct: 'red'
     
     },
 {
@@ -67,29 +69,43 @@ startButton.addEventListener('click',startGame);
 function startGame() {
     
     startButton.classList.add('hide');
-    shuffledQuestions = questions.sort(() => Math.random() - .5);
+    // shuffledQuestions = questions.sort(() => Math.random() - .5);
     questionsContainerEl.classList.remove('hide');
     currentQuestionsIndex = 0;
     showQuestion();
     nextButton.classList.remove('hide')
-
+    countdown()
 }
 function showQuestion() {
-    var buttonContainer= document.getElementById("button-container")
+    
     buttonContainer.innerHTML = ""
     questionTitle.innerHTML = questions[currentQuestionIndex].question;
-console.log (questions[currentQuestionIndex].answers) 
+
+// console.log (questions[currentQuestionIndex].answers) 
+
 var currentQuestionChoices= questions[currentQuestionIndex].answers
+
 for(var i=0; i<currentQuestionChoices.length;i++){
     console.log (currentQuestionChoices[i])
     var newButton= document.createElement("button")
-    newButton.innerHTML = currentQuestionChoices[i].text
+    newButton.setAttribute("class", "option")
+    newButton.setAttribute("value", currentQuestionChoices[i])
+    newButton.innerHTML = currentQuestionChoices[i]
     buttonContainer.append(newButton)
 }
 }
-function nextQuestion() {
+function nextQuestion(event) {
+   
+    var answerButton = event.target;
+    console.log (answerButton.value)
+    if (!answerButton.matches(".option")){
+        return
+    }
+    if(answerButton.value !== questions[currentQuestionIndex].correct){
+        console.log  ("It's working!")
+    }
     currentQuestionIndex++
     showQuestion();
 }
-nextButton.addEventListener('click', nextQuestion);
-
+// nextButton.addEventListener('click', nextQuestion);
+    buttonContainer.onClick= nextQuestion
